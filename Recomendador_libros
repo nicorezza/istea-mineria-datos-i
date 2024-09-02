@@ -1,0 +1,85 @@
+import csv
+
+class Libro:
+    def __init__(self, titulo, autor, genero, puntuacion):
+        self.titulo = titulo
+        self.autor = autor
+        self.genero = genero
+        self.puntuacion = puntuacion
+
+    def __str__(self):
+        return f"{self.titulo} por {self.autor} (Género: {self.genero}, Puntuación: {self.puntuacion})"
+
+def cargar_libros(nombre_archivo):
+    lista_libros = []
+    with open(nombre_archivo, newline='', encoding='utf-8') as archivo_csv:
+        lector_csv = csv.reader(archivo_csv)
+        next(lector_csv)  # Omitir la primera fila si tiene encabezados
+        for fila in lector_csv:
+            titulo, autor, genero, puntuacion = fila
+            libro = Libro(titulo, autor, genero, float(puntuacion))
+            lista_libros.append(libro)
+    return lista_libros
+
+def agregar_libro(lista_libros):
+    titulo = input("Ingresa el título del libro: ")
+    autor = input("Ingresa el autor del libro: ")
+    genero = input("Ingresa el género del libro: ")
+    puntuacion = float(input("Ingresa la puntuación del libro (0-10): "))
+    
+    libro = Libro(titulo, autor, genero, puntuacion)
+    lista_libros.append(libro)
+    print(f"\nLibro '{titulo}' agregado correctamente.\n")
+
+
+def buscar_libros_por_genero(lista_libros):
+    genero = input("Ingresa el género que deseas buscar: ")
+    libros_encontrados = [libro for libro in lista_libros if libro.genero.lower() == genero.lower()]
+    
+    if libros_encontrados:
+        print(f"\nLibros encontrados en el género '{genero}':")
+        for libro in libros_encontrados:
+            print(f"- {libro.titulo} por {libro.autor}")
+    else:
+        print(f"\nNo se encontraron libros en el género '{genero}'.\n")
+
+
+def recomendar_libro(lista_libros):
+    genero = input("Ingresa tu género de interés: ")
+    libros_en_genero = [libro for libro in lista_libros if libro.genero.lower() == genero.lower()]
+    
+    if libros_en_genero:
+        mejor_libro = max(libros_en_genero, key=lambda libro: libro.puntuacion)
+        print(f"\nTe recomendamos el libro '{mejor_libro.titulo}' con una puntuación de {mejor_libro.puntuacion}.\n")
+    else:
+        print(f"\nNo se encontraron libros en el género '{genero}'.\n")
+
+
+def main():
+
+    nombre_archivo = "Mineria_de_datos_I/Libros.csv"
+    lista_libros = cargar_libros(nombre_archivo)
+
+
+    while True:
+        print("\nSistema de Recomendación de Libros")
+        print("1. Agregar Libro")
+        print("2. Buscar Libros por Género")
+        print("3. Recomendar Libro")
+        print("4. Salir")
+        opcion = input("Elige una opción (1-4): ")
+        
+        if opcion == "1":
+            agregar_libro(lista_libros)
+        elif opcion == "2":
+            buscar_libros_por_genero(lista_libros)
+        elif opcion == "3":
+            recomendar_libro(lista_libros)
+        elif opcion == "4":
+            print("Saliendo del sistema de recomendación. ¡Hasta luego!")
+            break
+        else:
+            print("Opción no válida. Por favor, elige una opción entre 1 y 4.")
+
+if __name__ == "__main__":
+    main()
